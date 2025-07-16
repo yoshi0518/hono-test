@@ -1,0 +1,21 @@
+{
+  "name": "hono-test",
+  "author": "yoshi0518",
+  "version": "1.0.0",
+  "description": "",
+  "packageManager": "pnpm@10.8.0",
+  "engines": {
+    "node": ">=22.14.0",
+    "npm": "please_use_pnpm_instead",
+    "pnpm": ">=10.8.0"
+  },
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "fmt": "pnpm -r fmt",
+    "fmt:fix": "pnpm -r fmt:fix",
+    "typecheck": "pnpm -r typecheck",
+    "backend": "pnpm -F \"backend\"",
+    "frontend": "pnpm -F \"frontend\""
+  }
+}
