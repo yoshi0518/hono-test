@@ -8,7 +8,11 @@ let posts = originPosts;
 
 export const postsRouter = new Hono();
 
-postsRouter.get('/', (c) => c.json(posts));
+postsRouter.get('/', (c) => {
+  if (posts.length === 0) return c.json({ message: 'Not Found' }, 404);
+
+  return c.json(posts);
+});
 
 postsRouter.get('/:id', (c) => {
   const id = c.req.param('id');
