@@ -8,7 +8,11 @@ let users = originUsers;
 
 export const usersRouter = new Hono();
 
-usersRouter.get('/', (c) => c.json(users));
+usersRouter.get('/', (c) => {
+  if (users.length === 0) return c.json({ message: 'Not Found' }, 404);
+
+  return c.json(users);
+});
 
 usersRouter.get('/:id', (c) => {
   const id = c.req.param('id');
