@@ -1,0 +1,69 @@
+-- Custom SQL migration file, put your code below! --
+INSERT INTO "hono-test"."t_users"
+(
+  "name",
+  "email",
+  "created_at",
+  "updated_at"
+)
+VALUES
+(
+  'name1',
+  'user1@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name2',
+  'user2@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name3',
+  'user3@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name4',
+  'user4@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name5',
+  'user5@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name6',
+  'user6@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name7',
+  'user7@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name8',
+  'user8@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name9',
+  'user9@example.com',
+  NOW(),
+  NOW()
+),
+(
+  'name10',
+  'user10@example.com',
+  NOW(),
+  NOW()
+);
