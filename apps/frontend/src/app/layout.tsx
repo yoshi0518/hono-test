@@ -12,15 +12,15 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: '●●●●●',
-  description: '●●●●●',
-  keywords: ['●●●●●', '●●●●●', '●●●●●'],
-  openGraph: {
-    title: '●●●●●',
-    description: '●●●●●',
-    url: '●●●●●',
-    siteName: '●●●●●',
-  },
+  title: 'Hono Test',
+  description: 'hono test',
+  keywords: ['next', 'hono'],
+  // openGraph: {
+  //   title: '●●●●●',
+  //   description: '●●●●●',
+  //   url: '●●●●●',
+  //   siteName: '●●●●●',
+  // },
   robots: {
     index: !env.DEBUG, // falseでnoindex
   },
@@ -35,7 +35,12 @@ const RootLayout = ({
     lang="ja"
     className={notoSansJP.className}
   >
-    <body>{children}</body>
+    <body>
+      <div className="p-4">
+        <h1 className="mb-4 text-3xl font-bold underline">Hono Test</h1>
+        <div>{children}</div>
+      </div>
+    </body>
   </html>
 );
 
