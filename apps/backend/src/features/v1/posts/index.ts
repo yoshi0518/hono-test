@@ -1,22 +1,23 @@
+import { getCurrentDt } from '@/libs/utils';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import { posts as originPosts } from './data';
-
-let posts = originPosts;
+import { createPostAction, deletePostAction, readPostAction, readsPostAction, updatePostAction } from './action';
 
 export const postsRouter = new Hono();
 
-postsRouter.get('/', (c) => {
+postsRouter.get('/', async (c) => {
+  const posts = await readsPostAction();
+
   if (posts.length === 0) return c.json({ message: 'Not Found' }, 404);
 
   return c.json(posts);
 });
 
-postsRouter.get('/:id', (c) => {
+postsRouter.get('/:id', async (c) => {
   const id = c.req.param('id');
-  const post = posts.find((post) => post.id === Number(id));
+  const post = await readPostAction(Number(id));
 
   if (!post) return c.json({ message: 'Not Found' }, 404);
 
@@ -33,15 +34,12 @@ postsRouter.post(
       author: z.string(),
     }),
   ),
-  (c) => {
-    const { title, content, author } = c.req.valid('json');
-    const post = {
-      id: posts.length + 1,
-      title,
-      content,
-      author,
-    };
-    posts.push(post);
+  async (c) => {
+    await createPostAction({
+      ...c.req.valid('json'),
+      createdAt: getCurrentDt(),
+      updatedAt: getCurrentDt(),
+    });
 
     return new Response(null, { status: 201 });
   },
@@ -59,38 +57,28 @@ postsRouter.put(
       })
       .partial(),
   ),
-  (c) => {
+  async (c) => {
     const id = c.req.param('id');
-    const post = posts.find((post) => post.id === Number(id));
+    const post = await readPostAction(Number(id));
 
     if (!post) return c.json({ message: 'Not Found' }, 404);
 
-    const { title, content, author } = c.req.valid('json');
-
-    posts = posts.map((post) => {
-      if (post.id === Number(id)) {
-        return {
-          id: post.id,
-          title: title ?? post.title,
-          content: content ?? post.content,
-          author: author ?? post.author,
-        };
-      } else {
-        return post;
-      }
+    await updatePostAction(Number(id), {
+      ...c.req.valid('json'),
+      updatedAt: getCurrentDt(),
     });
 
     return new Response(null, { status: 204 });
   },
 );
 
-postsRouter.delete('/:id', (c) => {
+postsRouter.delete('/:id', async (c) => {
   const id = c.req.param('id');
-  const post = posts.find((post) => post.id === Number(id));
+  const post = await readPostAction(Number(id));
 
   if (!post) return c.json({ message: 'Not Found' }, 404);
 
-  posts = posts.filter((post) => post.id !== Number(id));
+  await deletePostAction(Number(id));
 
   return new Response(null, { status: 204 });
 });

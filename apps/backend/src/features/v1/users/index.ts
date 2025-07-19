@@ -1,22 +1,23 @@
+import { getCurrentDt } from '@/libs/utils';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import { users as originUsers } from './data';
-
-let users = originUsers;
+import { createUserAction, deleteUserAction, readsUserAction, readUserAction, updateUserAction } from './action';
 
 export const usersRouter = new Hono();
 
-usersRouter.get('/', (c) => {
+usersRouter.get('/', async (c) => {
+  const users = await readsUserAction();
+
   if (users.length === 0) return c.json({ message: 'Not Found' }, 404);
 
   return c.json(users);
 });
 
-usersRouter.get('/:id', (c) => {
+usersRouter.get('/:id', async (c) => {
   const id = c.req.param('id');
-  const user = users.find((user) => user.id === Number(id));
+  const user = await readUserAction(Number(id));
 
   if (!user) return c.json({ message: 'Not Found' }, 404);
 
@@ -32,14 +33,12 @@ usersRouter.post(
       email: z.string(),
     }),
   ),
-  (c) => {
-    const { name, email } = c.req.valid('json');
-    const user = {
-      id: users.length + 1,
-      name,
-      email,
-    };
-    users.push(user);
+  async (c) => {
+    await createUserAction({
+      ...c.req.valid('json'),
+      createdAt: getCurrentDt(),
+      updatedAt: getCurrentDt(),
+    });
 
     return new Response(null, { status: 201 });
   },
@@ -56,37 +55,28 @@ usersRouter.put(
       })
       .partial(),
   ),
-  (c) => {
+  async (c) => {
     const id = c.req.param('id');
-    const user = users.find((user) => user.id === Number(id));
+    const user = await readUserAction(Number(id));
 
     if (!user) return c.json({ message: 'Not Found' }, 404);
 
-    const { name, email } = c.req.valid('json');
-
-    users = users.map((user) => {
-      if (user.id === Number(id)) {
-        return {
-          id: user.id,
-          name: name ?? user.name,
-          email: email ?? user.email,
-        };
-      } else {
-        return user;
-      }
+    await updateUserAction(Number(id), {
+      ...c.req.valid('json'),
+      updatedAt: getCurrentDt(),
     });
 
     return new Response(null, { status: 204 });
   },
 );
 
-usersRouter.delete('/:id', (c) => {
+usersRouter.delete('/:id', async (c) => {
   const id = c.req.param('id');
-  const user = users.find((user) => user.id === Number(id));
+  const user = await readUserAction(Number(id));
 
   if (!user) return c.json({ message: 'Not Found' }, 404);
 
-  users = users.filter((user) => user.id !== Number(id));
+  await deleteUserAction(Number(id));
 
   return new Response(null, { status: 204 });
 });

@@ -14,3 +14,5 @@ export const app = new Hono()
   .basePath('/api');
 
 app.route('/v1', v1Router);
+
+export type AppType = typeof app;
