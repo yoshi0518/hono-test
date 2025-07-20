@@ -2,10 +2,12 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DEBUG: z.string().transform((value) => value === 'true'),
+  API_URL: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse({
   DEBUG: process.env.DEBUG,
+  API_URL: process.env.API_URL,
 });
 
 if (!parsedEnv.success) {
