@@ -11,8 +11,7 @@ export const app = new Hono()
       allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
     }),
   )
-  .basePath('/api');
-
-app.route('/v1', v1Router);
+  .basePath('/api')
+  .route('/v1', v1Router);
 
 export type AppType = typeof app;
